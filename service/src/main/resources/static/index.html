@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Movie Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            width: 70%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .results {
+            text-align: center;
+        }
+
+        .results ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .results li {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .results li:last-child {
+            border-bottom: none;
+        }
+
+        .highlight {
+            background-color: yellow;
+        }
+
+    </style>
+    <!-- Add jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <h1>Movie Search</h1>
+    <form id="search-form">
+        <input type="text" id="query" placeholder="Search for movies..." autocomplete="off" />
+        <button type="submit">Search</button>
+    </form>
+    <div class="results" id="results">
+        <!-- Results will be populated here by JavaScript -->
+    </div>
+</div>
+<script>
+    $(document).ready(function() {
+        $('#query').on('input', function() {
+            let query = $(this).val();
+            if (query.length >= 1) {
+                $.get('/api/v1/movies/search', { query: query }, function(data) {
+                    let resultsHtml = '';
+                    if (data.length > 0) {
+                        resultsHtml += '<ul>';
+                        $.each(data, function(index, movie) {
+                            let highlightedName = movie.name.replace(new RegExp('(' + query + ')', 'gi'), '<span class="highlight">$1</span>');
+                            resultsHtml += `<li>${highlightedName}</li>`;
+                        });
+                        resultsHtml += '</ul>';
+                    } else {
+                        resultsHtml = '<p>No results found</p>';
+                    }
+                    $('#results').html(resultsHtml);
+                });
+            } else {
+                $('#results').empty();
+            }
+        });
+    });
+</script>
+</body>
+</html>
