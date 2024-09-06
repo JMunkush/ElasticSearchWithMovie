@@ -1,11 +1,10 @@
 package io.munkush.app.repo;
 
-import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
-import io.munkush.app.model.Movie;
+import io.munkush.app.movie.Movie;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
+@Repository
+public interface MovieRepository extends JpaRepository<Movie, Long> {
 
-public interface MovieRepository extends ElasticsearchRepository<Movie, String> {
-    List<Movie> findAllByNameContains(String name);
-    List<Movie> findAllByDescription(String description);
 }
